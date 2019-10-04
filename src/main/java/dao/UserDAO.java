@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import connection.ConnectionUtil;
+import exception.DBException;
 import model.User;
 
 public class UserDAO implements IUserDAO {
@@ -13,7 +14,7 @@ public class UserDAO implements IUserDAO {
 	Connection con = null;
 	User user = new User();
 
-	public int login(User user) {
+	public int login(User user) throws DBException {
 		int userId = 0;
 		try {
 			con = ConnectionUtil.getConnection();
@@ -26,14 +27,14 @@ public class UserDAO implements IUserDAO {
 				userId = rs.getInt("user_id");
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DBException("Unable to login", e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}
 		return userId;
 	}
 
-	public void register(User user) { /// method is used to
+	public void register(User user) throws DBException { /// method is used to
 		/// insert registration
 		/// details into DB
 		try {
@@ -46,7 +47,7 @@ public class UserDAO implements IUserDAO {
 			pst.setString(4, user.getAddress());
 			pst.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DBException("Unable to reister", e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}

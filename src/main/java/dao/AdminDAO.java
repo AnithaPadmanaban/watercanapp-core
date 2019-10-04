@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import connection.ConnectionUtil;
+import exception.DBException;
 import model.Admin;
 import model.User;
 
@@ -15,7 +16,7 @@ public class AdminDAO implements IAdminDAO {
 	Connection con = null;
 	User user = new User();
 
-	public Boolean adminLogin(Admin admin) {
+	public Boolean adminLogin(Admin admin) throws DBException {
 		Boolean result = false;
 		try {
 			con = ConnectionUtil.getConnection();
@@ -28,14 +29,14 @@ public class AdminDAO implements IAdminDAO {
 				result = true;
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DBException("Unable to login!!", e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}
 		return result;
 	}
 
-	public void updateCanByAdmin(int can) {
+	public void updateCanByAdmin(int can) throws DBException {
 		try {
 			con = ConnectionUtil.getConnection();
 			String sql = "update stock_details set stock_availability=? where stock_id=1";
@@ -43,7 +44,7 @@ public class AdminDAO implements IAdminDAO {
 			pst.setInt(1, can);
 			pst.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DBException("Unable to update!!", e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}

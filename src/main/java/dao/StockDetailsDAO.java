@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import connection.ConnectionUtil;
+import exception.DBException;
 import model.StockDetails;
 import model.User;
 
@@ -15,7 +16,7 @@ public class StockDetailsDAO implements IStockDetailsDAO {
 	Connection con = null;
 	User user = new User();
 
-	public StockDetails viewStock() { /// method is used to view available stock from DB
+	public StockDetails viewStock() throws DBException { /// method is used to view available stock from DB
 		StockDetails stockDetails = new StockDetails();
 		try {
 			con = ConnectionUtil.getConnection();
@@ -28,7 +29,7 @@ public class StockDetailsDAO implements IStockDetailsDAO {
 				stockDetails.setStockAddedDate(date.toLocalDate());
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DBException("Unable to view stock",e);
 
 		} finally {
 			ConnectionUtil.close(con, pst);

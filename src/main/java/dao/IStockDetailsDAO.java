@@ -1,8 +1,9 @@
 package dao;
 
+import exception.DBException;
 import model.StockDetails;
 
 public interface IStockDetailsDAO {
 
-	public StockDetails viewStock();
+	public StockDetails viewStock() throws DBException;
 }
