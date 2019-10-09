@@ -17,10 +17,10 @@ public class ReserveService {
 	public int reserveCanDetail(User user, ReserveCan reserveCan) throws Exception {
 		StockDetails availableStock = stockService.viewAvailableStock();
 		int totalCanAfterReserve = 0;
-		int reserveId=reserveDAO.getReserveID(user);
-		
+		int reserveId = reserveDAO.getReserveID(user);
+
 		if (reserveCan.getCanReserve() <= availableStock.getStockAvailability()) {
-			
+
 			if (reserveId == 0) {
 				reserveId = reserveDAO.insertReserveStock(user, reserveCan);
 				totalCanAfterReserve = availableStock.getStockAvailability() - reserveCan.getCanReserve();
@@ -35,47 +35,44 @@ public class ReserveService {
 				System.out.println("totalCanResrve!!!!!!!" + totalCanReserve);
 				reserveId = reserveDAO.updateReserveStock(user, totalCanReserve);
 				totalCanAfterReserve = availableStock.getStockAvailability() - reserveCan.getCanReserve();
-				System.out.println("total can after resrve))))))))"+totalCanAfterReserve);
+				System.out.println("total can after resrve))))))))" + totalCanAfterReserve);
 				reserveDAO.updateCan(totalCanAfterReserve);
 			}
-						
-		}
-		else
-		{
+
+		} else {
 			throw new Exception("Insufficient Order");
-		}	
+		}
 		return reserveId;
 	}
-	
-	
-	public void orderReservedCan(User user, ReserveCan reserveCan) throws DBException
-	{
-	
-		int reserveId=reserveDAO.getReserveID(user);
-		if(reserveId==reserveCan.getReserveId()) {
-			int userId=user.getUserId();
-			int reserveCanValue=reserveDAO.getReserveCans(userId);
-		orderDAO.orderReservedStock(user, reserveCanValue);
-		}
-		else
-		{
+
+	public void orderReservedCan(User user, ReserveCan reserveCan) throws DBException {
+
+		int reserveId = reserveDAO.getReserveID(user);
+		if (reserveId == reserveCan.getReserveId()) {
+			int userId = user.getUserId();
+			int reserveCanValue = reserveDAO.getReserveCans(userId);
+			orderDAO.orderReservedStock(user, reserveCanValue);
+			reserveDAO.deleteModifiedReserveOrder(userId);
+		} else {
 			throw new DBException("Invalid ReserveId");
 		}
 	}
-	
-	
-	
-	public void orderModifiedCan(User user,ReserveCan reserveCan) throws DBException
-	{
-		int reserveId=reserveDAO.getReserveID(user);	
-		if(reserveId==reserveCan.getReserveId()) {
-			int userId=user.getUserId();
-			int reserveCanValue=reserveDAO.getReserveCans(userId);
-		orderDAO.orderModifiedReservedCan(user, reserveCan);
-		}
-		else
-		{
-			throw new DBException("Invalid ReserveId");
+
+	public void orderModifiedCan(User user, ReserveCan reserveCan) throws DBException {
+		int userId = user.getUserId();
+		System.out.println("User id is---"+userId);
+		int reserveCanValue = reserveDAO.getReserveCans(userId);
+		System.out.println("ReservedCanValue="+reserveCanValue);
+		System.out.println("User resere can"+reserveCan.getCanReserve());
+		if (reserveCan.getCanReserve() < reserveCanValue) {
+			orderDAO.orderModifiedReservedCan(user, reserveCan);
+			int totalCanAfterModified = reserveCanValue - reserveCan.getCanReserve();
+			StockDetails availableStock = stockService.viewAvailableStock();
+			int totalCanUpdate=totalCanAfterModified+availableStock.getStockAvailability();
+			orderDAO.updateCan(totalCanUpdate);
+			reserveDAO.deleteModifiedReserveOrder(userId);
+		} else {
+			throw new DBException("Input value is  greater than the reserved water-can..Please enter valid input");
 		}
 	}
 }

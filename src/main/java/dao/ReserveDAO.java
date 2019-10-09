@@ -102,11 +102,12 @@ public class ReserveDAO implements IReserveDAO {
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}
+		System.out.println("reserveCan"+reserveCan);
 		return reserveCan;
 
 	}
 
-	public void updateCan(int totalCanReserve) {
+	public void updateCan(int totalCanReserve) throws DBException {
 		try {
 			con = ConnectionUtil.getConnection();
 			String sql = "update stock_details set stock_availability=? where stock_id=1";
@@ -114,7 +115,22 @@ public class ReserveDAO implements IReserveDAO {
 			pst.setInt(1, totalCanReserve);
 			pst.executeUpdate();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new DBException("Unable to update stock...Contact your administrator",e);
+		} finally {
+			ConnectionUtil.close(con, pst);
+		}
+	}
+	
+public void deleteModifiedReserveOrder(int userId) throws DBException {
+		
+		try {
+			con = ConnectionUtil.getConnection();
+			String sql = "delete from reserve_info where user_reserve_id =?";
+			pst = con.prepareStatement(sql);
+			pst.setInt(1, userId);
+			pst.executeUpdate();
+		} catch (SQLException e) {
+			throw new DBException("Unable to delete",e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}

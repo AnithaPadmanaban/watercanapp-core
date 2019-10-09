@@ -13,5 +13,5 @@ public interface IReserveDAO {
 
 	public int getReserveCans(int userId);
 
-	public void updateCan(int totalCanReserve);
+	public void updateCan(int totalCanReserve) throws DBException;
 }

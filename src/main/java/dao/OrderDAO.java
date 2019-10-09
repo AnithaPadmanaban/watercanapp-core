@@ -16,7 +16,8 @@ public class OrderDAO implements IOrderDAO {
 	Connection con = null;
 	User user = new User();
 
-	public void orderStock(User user, OrderCan can) throws DBException { /// method is used to insert userid and can ordered in DB
+	public void orderStock(User user, OrderCan can) throws DBException { /// method is used to insert userid and can
+																			/// ordered in DB
 
 		try {
 			con = ConnectionUtil.getConnection();
@@ -26,13 +27,14 @@ public class OrderDAO implements IOrderDAO {
 			pst.setInt(2, can.getCanOrder());
 			pst.executeUpdate();
 		} catch (SQLException e) {
-			throw new DBException("Unable to order",e);
+			throw new DBException("Unable to order", e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}
 	}
-	
-	public void orderReservedStock(User user, int reserveCanValue) throws DBException { /// method is used to insert userid and can ordered in DB
+
+	public void orderReservedStock(User user, int reserveCanValue) throws DBException { /// method is used to insert
+																						/// userid and can ordered in DB
 
 		try {
 			con = ConnectionUtil.getConnection();
@@ -42,7 +44,7 @@ public class OrderDAO implements IOrderDAO {
 			pst.setInt(2, reserveCanValue);
 			pst.executeUpdate();
 		} catch (SQLException e) {
-			throw new DBException("Unable to order",e);
+			throw new DBException("Unable to order", e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}
@@ -56,14 +58,14 @@ public class OrderDAO implements IOrderDAO {
 			pst.setInt(1, totalCanOrder);
 			pst.executeUpdate();
 		} catch (SQLException e) {
-			throw new DBException("Unable to order",e);
+			throw new DBException("Unable to order", e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}
 	}
 
 	public void orderModifiedReservedCan(User user, ReserveCan reserveCan) throws DBException {
-		
+
 		try {
 			con = ConnectionUtil.getConnection();
 			String sql = "insert into order_info(user_order_id,cane_order) values(?,?)";
@@ -72,10 +74,9 @@ public class OrderDAO implements IOrderDAO {
 			pst.setInt(2, reserveCan.getCanReserve());
 			pst.executeUpdate();
 		} catch (SQLException e) {
-			throw new DBException("Unable to order",e);
+			throw new DBException("Unable to order", e);
 		} finally {
 			ConnectionUtil.close(con, pst);
 		}
 	}
-	}
-
+}
